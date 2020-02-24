@@ -1,9 +1,34 @@
 const guideList = document.querySelector('.guides');
+const loggedOutLinks = document.querySelectorAll('.logged-out');
+const loggedInLinks = document.querySelectorAll('.logged-in');
+const accountDetails = document.querySelector('.account-details');
+
+
+const setupUI = (user) => {
+  if (user) {
+    db.collection('users').doc(user.uid).get().then(doc=>{
+      const html = `
+      <div>Logged in as ${user.email}</div>
+      <div>${doc.data().bio}</div>
+      `;
+    });
+    //account info
+   
+    accountDetails.innerHTML = html;
+    loggedInLinks.forEach(item => item.style.display = 'block');
+    loggedOutLinks.forEach(item => item.style.display = 'none');
+  } else {
+    accountDetails.innerHTML = '';
+    loggedInLinks.forEach(item => item.style.display = 'none');
+    loggedOutLinks.forEach(item => item.style.display = 'block');
+  }
+};
+
 
 //setup guides
 const setupGuides = (data) => {
 
-  if(data.length >0){
+  if (data.length > 0) {
     let html = '';
     data.forEach(doc => {
       const guide = doc.data();
@@ -14,16 +39,16 @@ const setupGuides = (data) => {
         <div class="collapsible-body white">${guide.content}</div>
       </li>
       `;
-       html +=li;
-  
+      html += li;
+
     });
-    guideList.innerHTML=html;
-  }else{
-    guideList.innerHTML ='<h5>Login to view guides</h5>'
+    guideList.innerHTML = html;
+  } else {
+    guideList.innerHTML = '<h5>Login to view guides</h5>';
   }
- 
- 
-}
+
+
+};
 
 // setup materialize components
 document.addEventListener('DOMContentLoaded', function () {
